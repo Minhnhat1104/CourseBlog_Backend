@@ -70,9 +70,9 @@ const CourseController = {
   //[DELETE] /courses/:id/delete
   forceDestroy: async (req, res, next) => {
     try {
-      Course.deleteOne({ _id: req.params.id })
-        .then(() => res.redirect("back"))
-        .catch(next);
+      const course = await Course.deleteOne({ _id: req.params.id });
+
+      res.status(200).json({ data: course });
     } catch (err) {
       res.status(500).json(err);
       console.log(err);
@@ -82,9 +82,9 @@ const CourseController = {
   //[PATCH] /courses/:id/restore
   restore: async (req, res, next) => {
     try {
-      Course.restore({ _id: req.params.id })
-        .then(() => res.redirect("back"))
-        .catch(next);
+      const course = await Course.restore({ _id: req.params.id });
+
+      res.status(200).json({ data: course });
     } catch (err) {
       res.status(500).json(err);
       console.log(err);
