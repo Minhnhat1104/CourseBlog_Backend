@@ -18,11 +18,12 @@ const AuthControlller = {
   // [GET] /auth/sign-in
   signIn: async (req, res, next) => {
     try {
-      console.log("🚀 ~ file: AuthControlller.js:13 ~ req.body:", req.query);
       const user = await User.findOne({
         username: req?.query?.username,
         password: req?.query?.password,
       });
+
+      delete user.password;
 
       res.status(200).json({ data: user });
     } catch (err) {
@@ -38,7 +39,7 @@ const AuthControlller = {
       const params = {
         ...formData,
         _id: uuidv4(),
-        isAdmin: false,
+        isAdmin: formData?.isAdmin || false,
       };
 
       const user = new User(params);
@@ -68,12 +69,12 @@ const AuthControlller = {
     }
   },
 
-  //[DELETE] /auth/:id
+  //[DELETE] /auth/destroy
   destroy: async (req, res, next) => {
     try {
-      const course = await User.findOneAndRemove({ _id: req.params.id });
+      const user = await User.deleteMany({ _id: { $in: req.body?.ids || [] } });
 
-      res.status(200).json({ data: course });
+      res.status(200).json({ data: user });
     } catch (err) {
       res.status(500).json(err);
       console.log(err);
