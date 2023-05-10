@@ -15,6 +15,7 @@ const Course = new Schema(
     videoid: { type: String, required: true },
     level: { type: String },
     slug: { type: String, slug: "name", unique: true },
+    deleted: { type: Boolean, default: false },
   },
   {
     _id: false,

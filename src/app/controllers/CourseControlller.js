@@ -55,22 +55,28 @@ const CourseController = {
     }
   },
 
-  //[DELETE] /courses/:id
+  //[DELETE] /courses/destroy
   destroy: async (req, res, next) => {
     try {
-      const course = await Course.delete({ _id: req.params.id });
+      const ids = req.body?.ids;
+      await ids.forEach(async (v) => {
+        const course = await Course.delete({ _id: v });
+      });
 
-      res.status(200).json({ data: course });
+      res.status(200).json({ data: "Delete successfully" });
     } catch (err) {
       res.status(500).json(err);
       console.log(err);
     }
   },
 
-  //[DELETE] /courses/:id/delete
+  //[DELETE] /courses/destroy/force
   forceDestroy: async (req, res, next) => {
     try {
-      const course = await Course.deleteOne({ _id: req.params.id });
+      // const course = await Course.deleteOne({ _id: req.params.id });
+      const course = await Course.deleteMany({
+        _id: { $in: req.body?.ids || [] },
+      });
 
       res.status(200).json({ data: course });
     } catch (err) {
@@ -79,12 +85,15 @@ const CourseController = {
     }
   },
 
-  //[PATCH] /courses/:id/restore
+  //[PATCH] /courses/restore
   restore: async (req, res, next) => {
     try {
-      const course = await Course.restore({ _id: req.params.id });
+      const ids = req.body?.data?.ids;
+      ids.forEach(async (v) => {
+        const course = await Course.restore({ _id: v });
+      });
 
-      res.status(200).json({ data: course });
+      res.status(200).json({ data: "Restore course successfully" });
     } catch (err) {
       res.status(500).json(err);
       console.log(err);
